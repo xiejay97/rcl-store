@@ -1,0 +1,73 @@
+{
+  "root": true,
+  "plugins": ["@nx", "import", "react-refresh"],
+  "extends": ["plugin:prettier/recommended"],
+  "overrides": [
+    {
+      "files": ["*.ts", "*.tsx", "*.js", "*.jsx"],
+      "rules": {
+        "import/order": [
+          "error",
+          {
+            "groups": ["type", "builtin", "external", "internal", ["parent", "sibling", "index"]],
+            "pathGroups": [
+              {
+                "pattern": "*.scss",
+                "group": "index",
+                "patternOptions": { "matchBase": true },
+                "position": "after"
+              }
+            ],
+            "pathGroupsExcludedImportTypes": ["type", "builtin"],
+            "newlines-between": "always",
+            "alphabetize": {
+              "order": "asc",
+              "caseInsensitive": false
+            },
+            "warnOnUnassignedImports": true
+          }
+        ]
+      }
+    },
+    {
+      "files": ["*.tsx", "*.jsx"],
+      "rules": {
+        "react-refresh/only-export-components": "warn"
+      }
+    },
+    {
+      "files": ["*.ts", "*.tsx"],
+      "extends": ["plugin:@nx/typescript"],
+      "rules": {
+        "no-unreachable": "error",
+        "@typescript-eslint/array-type": "error",
+        "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+        "@typescript-eslint/consistent-type-imports": "error",
+        "@typescript-eslint/method-signature-style": "error",
+        "@typescript-eslint/no-confusing-non-null-assertion": "error",
+        "@typescript-eslint/no-implicit-any-catch": "error",
+        "@typescript-eslint/no-inferrable-types": [
+          "error",
+          {
+            "ignoreParameters": true,
+            "ignoreProperties": true
+          }
+        ],
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": [
+          "error",
+          {
+            "ignoreRestSiblings": false
+          }
+        ],
+        "no-unused-expressions": "off",
+        "@typescript-eslint/no-unused-expressions": ["error"]
+      }
+    },
+    {
+      "files": ["*.js", "*.jsx"],
+      "extends": ["plugin:@nx/javascript"],
+      "rules": {}
+    }
+  ]
+}

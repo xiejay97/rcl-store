@@ -1,0 +1,64 @@
+{
+  "name": "rcl-store",
+  "version": "1.0.1",
+  "description": "A state management library based on context for React",
+  "type": "module",
+  "source": "src/index.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/rcl-store.cjs",
+      "import": "./dist/rcl-store.module.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "dist/rcl-store.cjs",
+  "module": "dist/rcl-store.module.js",
+  "unpkg": "dist/rcl-store.umd.js",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "microbundle"
+  },
+  "devDependencies": {
+    "@nx/eslint-plugin": "^16.1.4",
+    "@types/react": "^18.0.28",
+    "@typescript-eslint/eslint-plugin": "^5.59.6",
+    "eslint": "^8.40.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-config-standard-with-typescript": "^34.0.1",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-n": "^15.7.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-promise": "^6.1.1",
+    "eslint-plugin-react": "^7.32.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.1",
+    "microbundle": "^0.15.1",
+    "prettier": "^2.8.8",
+    "typescript": "^5.0.4"
+  },
+  "peerDependencies": {
+    "immer": ">=2.0.0",
+    "react": "^16.8.0 || ^17.0.1 || ^18.0.0"
+  },
+  "files": [
+    "dist/"
+  ],
+  "keywords": [
+    "react",
+    "state",
+    "context",
+    "store"
+  ],
+  "homepage": "https://github.com/xiejay97/rcl-store/tree/main/packages/ui#readme",
+  "bugs": {
+    "url": "https://github.com/xiejay97/rcl-store/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/xiejay97/rcl-store.git"
+  },
+  "author": "Xie Jay <xiejay97@gmail.com>",
+  "license": "MIT"
+}
