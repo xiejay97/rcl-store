@@ -12,30 +12,35 @@ export interface ProviderProps {
 export type Provider = (props: ProviderProps) => JSX.Element | null;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function createProvider<T extends {}>(id: number, defaultValue: T): Provider {
+export function createProvider<T extends {}>(id: number, defaultValue: T): { Provider: Provider; set: any } {
   const contextList = Object.entries(ContextStore.get(id)!);
-  return (props) => {
-    const states = {};
-    for (const [key] of contextList) {
-      const [value, updateValue] = useState(() => freeze(defaultValue[key], true));
-      const setValue = useCallback((updater: any) => {
-        if (typeof updater === 'function') updateValue(produce(updater));
-        else updateValue(freeze(updater));
-      }, []);
+  const states = {};
+  return {
+    Provider: (props) => {
+      for (const [key] of contextList) {
+        const [value, updateValue] = useState(() => freeze(defaultValue[key], true));
+        const setValue = useCallback((updater: any) => {
+          if (typeof updater === 'function') updateValue(produce(updater));
+          else updateValue(freeze(updater));
+        }, []);
 
-      states[key] = useMemo(() => [value, setValue], [value]);
-    }
-
-    const contextListCopy = ([] as [string, React.Context<any>][]).concat(contextList);
-    const provider = (): any => {
-      if (contextListCopy.length === 0) {
-        return props.children;
+        states[key] = useMemo(() => [value, setValue], [value]);
       }
 
-      const [key, Context] = contextListCopy.shift()!;
-      return createElement(Context.Provider, { value: states[key] }, provider());
-    };
+      const contextListCopy = ([] as [string, React.Context<any>][]).concat(contextList);
+      const provider = (): any => {
+        if (contextListCopy.length === 0) {
+          return props.children;
+        }
 
-    return provider();
+        const [key, Context] = contextListCopy.shift()!;
+        return createElement(Context.Provider, { value: states[key] }, provider());
+      };
+
+      return provider();
+    },
+    set: (key: string, value: any) => {
+      states[key][1](value);
+    },
   };
 }
