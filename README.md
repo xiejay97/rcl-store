@@ -68,3 +68,37 @@ export default function App() {
   );
 }
 ```
+
+# API
+
+```ts
+interface ProviderProps {
+  children?: React.ReactNode;
+}
+type Provider = (props: ProviderProps) => JSX.Element | null;
+
+interface Store<T> {
+  Provider: Provider;
+  // Get the value by specified `key`, don't use it in the render pass because it won't subscribe to updates!
+  get: <K extends keyof T>(key: K) => T[K];
+  // Set the value by specified `key`, useful when you don't need to subscribe to the value.
+  set: <K extends keyof T>(key: K, value: T[K] | ((draft: T[K]) => void)) => void;
+}
+
+// Create a store with the default value.
+function createStore<T extends {}>(defaultValue: T): Store<T>;
+
+// Get a store.
+// You can pass `filter` parameter to subscribe specified values.
+function useStore<T extends {}, K extends keyof T = keyof T>(
+  store: Store<T>,
+  filter?: K[]
+): [
+  {
+    [P in K]: T[P];
+  },
+  {
+    [P in K]: (value: T[P] | ((draft: T[P]) => void)) => void;
+  }
+];
+```
