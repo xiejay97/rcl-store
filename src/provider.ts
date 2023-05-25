@@ -12,7 +12,7 @@ export interface ProviderProps {
 export type Provider = (props: ProviderProps) => JSX.Element | null;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export function createProvider<T extends {}>(id: number, defaultValue: T): { Provider: Provider; set: any } {
+export function createProvider<T extends {}>(id: number, defaultValue: T): { Provider: Provider; get: any; set: any } {
   const contextList = Object.entries(ContextStore.get(id)!);
   const states = {};
   return {
@@ -38,6 +38,9 @@ export function createProvider<T extends {}>(id: number, defaultValue: T): { Pro
       };
 
       return provider();
+    },
+    get: (key: string) => {
+      return states[key][0];
     },
     set: (key: string, value: any) => {
       states[key][1](value);

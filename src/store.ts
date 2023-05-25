@@ -8,6 +8,7 @@ import { ContextStore, getId } from './vars';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export interface Store<T> {
   Provider: Provider;
+  get: <K extends keyof T>(key: K) => T[K];
   set: <K extends keyof T>(key: K, value: T[K] | ((draft: T[K]) => void)) => void;
 }
 

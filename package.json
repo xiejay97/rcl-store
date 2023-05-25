@@ -1,6 +1,6 @@
 {
   "name": "rcl-store",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A state management library based on context for React",
   "type": "module",
   "source": "src/index.ts",
