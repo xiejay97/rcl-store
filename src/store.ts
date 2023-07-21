@@ -53,7 +53,7 @@ export function createStore<T extends object, K extends keyof T = keyof T>(defau
     {
       get: (key) => store.getSnapshot(key),
       set: (key, value) => {
-        const val = typeof value === 'function' ? produce(value) : freeze(value);
+        const val = typeof value === 'function' ? produce(store.getSnapshot(key), value) : freeze(value);
         store.setValue(key, val);
       },
     } as Store<T, K>,
