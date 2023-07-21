@@ -1,6 +1,6 @@
 # rcl-store
 
-A state management library based on context for React.
+A state management library for React.
 
 # Installation
 
@@ -61,10 +61,10 @@ function Count2() {
 
 export default function App() {
   return (
-    <GlobalStore.Provider>
+    <>
       <Count1 />
       <Count2 />
-    </GlobalStore.Provider>
+    </>
   );
 }
 ```
@@ -72,13 +72,7 @@ export default function App() {
 # API
 
 ```ts
-interface ProviderProps {
-  children?: React.ReactNode;
-}
-type Provider = (props: ProviderProps) => JSX.Element | null;
-
 interface Store<T> {
-  Provider: Provider;
   // Get the value by specified `key`, don't use it in the render pass because it won't subscribe to updates!
   get: <K extends keyof T>(key: K) => T[K];
   // Set the value by specified `key`, useful when you don't need to subscribe to the value.
