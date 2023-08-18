@@ -43,7 +43,7 @@ class IStore<T extends object, K extends keyof T = keyof T> {
 
 export interface Store<T extends object, K extends keyof T = keyof T> {
   get: (key: K) => T[K];
-  set: (key: K, value: T[K] | ((draft: T[K]) => void)) => void;
+  set: (key: K, value: T[K] | ((draft: T[K]) => void), emitChange?: boolean) => void;
 }
 
 export function createStore<T extends object, K extends keyof T = keyof T>(defaultValue: T): Store<T, K> {
@@ -52,9 +52,12 @@ export function createStore<T extends object, K extends keyof T = keyof T>(defau
   return Object.assign(
     {
       get: (key) => store.getSnapshot(key),
-      set: (key, value) => {
+      set: (key, value, emitChange = true) => {
         const val = typeof value === 'function' ? produce(store.getSnapshot(key), value) : freeze(value);
         store.setValue(key, val);
+        if (emitChange) {
+          store.emitChange(key);
+        }
       },
     } as Store<T, K>,
     { _store: store }
@@ -80,7 +83,6 @@ export function useStore<T extends object, K extends keyof T = keyof T>(
       res1[key] = value;
       res2[key] = useCallback((value: any) => {
         store.set(key, value);
-        _store.emitChange(key);
       }, []);
     }
   }
