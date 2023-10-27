@@ -1,26 +1,26 @@
 import { freeze, produce } from 'immer';
 import { useCallback, useSyncExternalStore } from 'react';
 
-class IStore<T extends object, K extends keyof T = keyof T> {
+class IStore<T extends object> {
   private _store: T;
-  private _keys: K[];
-  private _listeners: Map<K, (() => void)[]>;
+  private _keys: (keyof T)[];
+  private _listeners: Map<keyof T, (() => void)[]>;
 
-  get keys(): K[] {
+  get keys(): (keyof T)[] {
     return this._keys;
   }
 
   constructor(defaultValue: T) {
     this._store = defaultValue;
-    this._keys = Object.keys(defaultValue) as K[];
+    this._keys = Object.keys(defaultValue) as (keyof T)[];
     this._listeners = new Map(this._keys.map((key) => [key, []]));
   }
 
-  setValue(key: K, value: any) {
+  setValue(key: keyof T, value: any) {
     this._store[key] = value;
   }
 
-  subscribe(key: K, onStoreChange: () => void) {
+  subscribe(key: keyof T, onStoreChange: () => void) {
     this._listeners.set(key, this._listeners.get(key)!.concat([onStoreChange]));
     return () => {
       this._listeners.set(
@@ -30,24 +30,24 @@ class IStore<T extends object, K extends keyof T = keyof T> {
     };
   }
 
-  getSnapshot(key: K) {
+  getSnapshot(key: keyof T) {
     return this._store[key];
   }
 
-  emitChange(key: K) {
+  emitChange(key: keyof T) {
     for (const listener of this._listeners.get(key)!) {
       listener();
     }
   }
 }
 
-export interface Store<T extends object, K extends keyof T = keyof T> {
-  get: (key: K) => T[K];
-  set: (key: K, value: T[K] | ((draft: T[K]) => void), emitChange?: boolean) => void;
+export interface Store<T extends object> {
+  get: <K extends keyof T>(key: K) => T[K];
+  set: <K extends keyof T>(key: K, value: T[K] | ((draft: T[K]) => void), emitChange?: boolean) => void;
 }
 
-export function createStore<T extends object, K extends keyof T = keyof T>(defaultValue: T): Store<T, K> {
-  const store = new IStore<T, K>(defaultValue);
+export function createStore<T extends object>(defaultValue: T): Store<T> {
+  const store = new IStore<T>(defaultValue);
 
   return Object.assign(
     {
@@ -59,16 +59,16 @@ export function createStore<T extends object, K extends keyof T = keyof T>(defau
           store.emitChange(key);
         }
       },
-    } as Store<T, K>,
+    } as Store<T>,
     { _store: store }
   );
 }
 
-export function useStore<T extends object, K extends keyof T = keyof T>(
-  store: Store<T, K>,
-  filter?: K[]
-): [{ [P in K]: T[P] }, { [P in K]: (value: T[P] | ((draft: T[P]) => void)) => void }] {
-  const _store = (store as any)._store as IStore<T, K>;
+export function useStore<T extends object>(
+  store: Store<T>,
+  filter?: (keyof T)[]
+): [{ [K in keyof T]: T[K] }, { [K in keyof T]: (value: T[K] | ((draft: T[K]) => void)) => void }] {
+  const _store = (store as any)._store as IStore<T>;
   const res1 = {} as any;
   const res2 = {} as any;
   for (const key of _store.keys) {
